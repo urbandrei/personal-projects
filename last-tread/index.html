@@ -1,0 +1,101 @@
+<DOCTYPE! html>
+<html>
+<head>
+<style>
+#tank {
+	position:absolute;
+	background-color:black;
+	width:min(25vh,25vw);
+	height:min(25vh,25vw);
+	margin:auto;
+	top:min(37.5vh,37.5vw);
+	left:min(37.5vh,37.5vw);
+}
+.zombs {
+	position:absolute;
+	background-color:red;
+	width:min(2vh,2vw);
+	height:min(2vh,2vw);
+}
+</style>
+<script>window.onload = () => {
+shots = []
+document.addEventListener("click",(event)=>{
+	xclick = 100*event.x/Math.min(window.innerWidth,window.innerHeight)
+	yclick = 100*event.y/Math.min(window.innerWidth,window.innerHeight)
+	dist = ((xclick-50)**2+(yclick-50)**2)**.5
+	console.log((yclick-50)*50/dist)
+	trail = document.createElement("div")
+	trail.className = "zombs"
+	trail.style.top = "calc("+((yclick-50)*50/dist)+ "*min(1vh,1vw))"
+	trail.style.left = "min("+((xclick-50)*50/dist+50)+"vh,"+((xclick-50)*50/dist+50)+"vw)"
+	trail.style.height = "min(100vh,100vw)"
+	trail.style.width = "min(.5vh,.5vw)"
+
+	trail.style.rotate = Math.atan((yclick-50)/(xclick-50))+Math.PI/2+ "rad"
+	document.body.appendChild(trail)
+	shots.push([trail,xclick,yclick,1])
+})
+zombs = []
+function addZombs() {
+	z = document.createElement("div")
+	z.className = "zombs"
+	document.body.appendChild(z)
+	health = Math.ceil(Math.random()*3)
+	z.style.width = "calc(" + health + "*min(1vh,1vw))"
+	z.style.height = "calc(" + health + "*min(1vh,1vw))"
+	x = -health + (Math.random()<.5)*(100+health)
+	y = -health + Math.random()*(100+health)
+	if(Math.random()<0.5) {
+		y = -health + (Math.random()<.5)*(100+health)
+		x = -health + Math.random()*(100+health)
+	}
+	z.style.left = "calc("+x+"min(1vh,1vw))"
+	z.style.top = "calc("+y+"min(1vh,1vw))"
+
+	zombs.push([z,x,y,health])
+}
+addZombs()
+timer = 0
+setInterval(() => {
+	timer++
+	if(Math.random() < 0.01) {
+		addZombs()
+	}
+	for(i = zombs.length-1 ; i>=0 ; i--) {
+		isHit = false
+		for(j=0;j<shots.length;j++) {
+			if(Math.abs(Math.atan((shots[j][1]-50)/(shots[j][2]-50))-Math.atan((zombs[i][1]-50)/(zombs[i][2]-50))) < .2) {
+				isHit = true
+			}
+		}
+		if(isHit) {
+			zombs[i][0].remove()
+			zombs.splice(i,1)
+		}else {
+			dist = ((zombs[i][1]-50)**2+(zombs[i][2]-50)**2)**.5
+			zombs[i][1] += (50-zombs[i][1])*.5/dist
+			zombs[i][2] += (50-zombs[i][2])*.5/dist
+			zombs[i][0].style.left = "min("+zombs[i][1] + "vh,"+zombs[i][1]+"vw)"
+			zombs[i][0].style.top = "min("+zombs[i][2]+"vh,"+zombs[i][2]+"vw)"
+		}
+	}
+	for(i = shots.length-1;i>=0;i--) {
+		shots[i][3]--
+		if(shots[i][3]<0){
+			shots[i][0].remove()
+			shots.splice(i,1)
+		}
+	}
+},1000/60)
+}</script>
+</head>
+<body>
+<div id="tank"></div>
+</body>
+</html>
+<!-- SPECIAL THANKS TO OUR KOFI SUPPORTERS
+Michael Thompson
+Rajesh
+Shudokuso_
+-->
