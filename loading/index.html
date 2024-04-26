@@ -1,0 +1,154 @@
+<!-- SPECIAL THANKS TO OUR KOFI SUPPORTERS
+Michael Thompson
+Rajesh
+Shudokuso_
+Zek
+Rajesh Pillai
+-->
+<html>
+<head>
+<style>
+
+@font-face {
+    font-family: pixel;
+    src: url(lili.otf);
+}
+
+* {
+	font-family: "pixel";
+}
+#title {
+	position:absolute;
+	font-size:min(9vh,9vw);
+	bottom: min(55vh,55vw);
+	left:min(20vh,20vw);
+	color:white;
+	width:min(60vh,60vw);
+	text-align:center;
+}
+#thanks {
+	position:absolute;
+	font-size:min(5vh,5vw);
+	top: min(30vh,30vw);
+	left:min(20vh,20vw);
+	color:white;
+	width:min(60vh,60vw);
+	opacity:0;
+}
+#estimate {
+	position:absolute;
+	font-size:min(3vh,3vw);
+	top: min(54vh,54vw);
+	left:min(20vh,20vw);
+	color:white;
+	width:min(60vh,60vw);
+	text-align:center;
+}
+
+#square {
+	position:relative;
+	width:min(100vh,100vw);
+	height:min(100vh,100vw);
+	margin:auto;
+}
+#loading {
+	position:relative;
+	border: min(1vh,1vw) solid white;
+	width: min(60vh,60vw);
+	height: min(6vh,6vw);
+	top: min(45vh,45vw);
+	left:min(19vh,19vw);
+}
+.blips {
+	position:relative;
+	left:1%;
+	margin: 2% 1% 2% 1%;
+	height:60%;
+	width:7.9%;
+	background-color:white;
+	overflow:auto;
+	float:left;
+}
+body {
+	background-color:black;
+}
+</style>
+<script>window.onload = () =>{
+	moveToTop = true
+	document.addEventListener("keydown", ()=>{
+		moveToTop = !moveToTop
+	})
+	topShift = 0
+	isTyping = false
+	newText = "est time left: 9 minutes"
+	blips = 1
+	timer = 0
+	blip = document.createElement("div")
+	blip.className = "blips"
+	document.getElementById("loading").appendChild(blip)
+	setInterval(() => {
+		timer++
+		if(moveToTop) {
+			topShift+=(30>topShift)/3
+			if(topShift>=30) {
+				document.getElementById("thanks").style.opacity = 1;
+			}
+		} else {
+			topShift-=(0<=topShift)/3
+			if(topShift<30) {
+				document.getElementById("thanks").style.opacity = 0;
+			}
+
+		}
+		document.getElementById("estimate").style.top =  "min("+(54-topShift)+"vh,"+(54-topShift)+"vw)"
+		document.getElementById("loading").style.top =  "min("+(45-topShift)+"vh,"+(45-topShift)+"vw)"
+		document.getElementById("title").style.bottom =  "min("+(55+topShift)+"vh,"+(55+topShift)+"vw)"
+		if(newText != "" && !isTyping && timer%3==0) {
+			temp = document.getElementById("estimate").innerHTML
+			if(temp.length == 0) {
+				isTyping = true
+			} else {
+				document.getElementById("estimate").innerHTML = temp.substring(0,temp.length - 1)
+			}
+		}
+		if(newText != "" && isTyping && timer%3==0) {
+			document.getElementById("estimate").innerHTML += newText.charAt(0)
+			newText = newText.substring(1,newText.length)
+		}
+		if(newText == "") {
+			isTyping = false
+		}
+		if(timer%(60*10)==0 && blips < 10) {
+			blips++
+			blip.style.opacity = "100%"
+			blip = document.createElement("div")
+			blip.className = "blips"
+			document.getElementById("loading").appendChild(blip)
+			newText = "est time left: " + (10-blips) + " minutes"
+		}
+		if(timer%(60*60)==0 && blips == 10) {
+			blip.style.opacity = "100%"
+			blips++
+			newText = "stream starting soon"
+		}
+
+		if(blip && blips < 11) {
+			if(timer%60==0) {
+				blip.style.opacity = "0%"
+			} else if(timer%30==0) {
+				blip.style.opacity = "100%"
+			}
+		} 
+	},1000/60)
+}</script>
+</head>
+<body>
+<div id="square">
+<div id="thanks">TOP CHATTERS:<br>1) PERSON1  5000<br>2) PERSON2  2700<br>3) PERSON3  1000<br>4) PERSON4   555<br>5) PERSON5   100<br>   ...   </div>
+<div id="title">URBANDREI</div>
+<div id="loading">
+</div>
+<div id="estimate"></div>
+</div>
+</body>
+</html>
